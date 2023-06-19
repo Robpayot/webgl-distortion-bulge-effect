@@ -3,6 +3,7 @@ import { Renderer, Program, Color, Mesh, Triangle, Vec2 } from 'ogl'
 import vertex from '@/js/glsl/main.vert'
 import fragment from '@/js/glsl/main.frag'
 import LoaderManager from '../managers/LoaderManager'
+import { gsap } from 'gsap'
 // import LoaderManager from '@/js/managers/LoaderManager'
 
 class Scene {
@@ -11,15 +12,20 @@ class Scene {
   #mesh
   #program
   #guiObj = {
-    offset: 1,
-    bulgeEffect: 1,
+    bulge: 0,
     strength: 1.1,
     radius: 0.95,
     displacementMap: 0.3,
   }
   #mouse = new Vec2(0, 0)
-  constructor(el) {
+  #elRect
+  #canMove = true
+  #src
+  #index
+  constructor(el, src, index) {
     this.#el = el
+    this.#src = src
+    this.#index = index
     this.setGUI()
     this.setScene()
   }
@@ -27,11 +33,13 @@ class Scene {
   setGUI() {
     const gui = new GUI()
 
-    const handleChange = (value) => {
-      this.#program.uniforms.uOffset.value = value
+    const handleChange = () => {
+      this.#program.uniforms.uRadius.value = this.#guiObj.radius
+      this.#program.uniforms.uStrength.value = this.#guiObj.strength
     }
 
-    gui.add(this.#guiObj, 'offset', 0.5, 4).onChange(handleChange)
+    gui.add(this.#guiObj, 'radius', 0, 1).onChange(handleChange)
+    gui.add(this.#guiObj, 'strength', 0, 3).onChange(handleChange)
   }
 
   async setScene() {
@@ -48,8 +56,8 @@ class Scene {
     await LoaderManager.load(
       [
         {
-          name: 'image1',
-          texture: './img/image1.png',
+          name: `image_${this.#index}`,
+          texture: `./img/${this.#src}`,
         },
       ],
       gl
@@ -72,7 +80,8 @@ class Scene {
 
     const geometry = new Triangle(gl)
 
-    const texture = LoaderManager.get('image1')
+    const texture = LoaderManager.get(`image_${this.#index}`)
+    console.log(LoaderManager)
 
     this.#program = new Program(gl, {
       vertex,
@@ -83,29 +92,51 @@ class Scene {
         uTextureResolution: { value: new Vec2(texture.image.width, texture.image.height) },
         uResolution: { value: new Vec2(gl.canvas.offsetWidth, gl.canvas.offsetHeight) },
         uMouse: { value: this.#mouse },
-        uBulge: { value: this.#guiObj.bulgeEffect },
+        uBulge: { value: this.#guiObj.bulge },
         uRadius: { value: this.#guiObj.radius },
         uStrength: { value: this.#guiObj.strength },
       },
     })
 
-    console.log(this.#program.uniforms)
-
     this.#mesh = new Mesh(gl, { geometry, program: this.#program })
 
     this.events()
+
+    // this.intro()
+  }
+
+  intro() {
+    this.#mouse.x = 0.5
+    this.#mouse.y = 0
+    gsap.fromTo(
+      this.#program.uniforms.uBulge,
+      { value: 2 },
+      {
+        value: 0,
+        duration: 2,
+        ease: 'expo.out',
+        onComplete: () => {
+          this.#canMove = true
+        },
+      }
+    )
   }
 
   events() {
     window.addEventListener('resize', this.handleResize, false)
     window.addEventListener('mousemove', this.handleMouseMove, false)
+
+    this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
+    this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
     requestAnimationFrame(this.handleRAF)
   }
 
   handleResize = () => {
-    const w = window.innerWidth
-    const h = window.innerHeight
+    const w = this.#el.parentNode.offsetWidth
+    const h = this.#el.parentNode.offsetHeight
     this.#renderer.setSize(w, h)
+
+    this.#elRect = this.#el.getBoundingClientRect()
 
     if (this.#program) {
       this.#program.uniforms.uResolution.value = new Vec2(w, h)
@@ -113,11 +144,21 @@ class Scene {
   }
 
   handleMouseMove = (e) => {
-    const x = (e.clientX / window.innerWidth)
-    const y = 1 - (e.clientY / window.innerHeight)
+    if (!this.#canMove) return
+    const x = (e.clientX - this.#elRect.left) / this.#el.offsetWidth
+    const y = 1 - (e.clientY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
 
-    this.#mouse.x = x
-    this.#mouse.y = y
+    this.#mouse.x = gsap.utils.clamp(0, 1, x)
+    this.#mouse.y = gsap.utils.clamp(0, 1, y)
+  }
+
+  handleMouseEnter = () => {
+    if (!this.#canMove) return
+    gsap.fromTo(this.#program.uniforms.uBulge, { value: 0 }, { value: 1, duration: 1, ease: 'expo.out' })
+  }
+  handleMouseLeave = () => {
+    if (!this.#canMove) return
+    gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
   }
 
   handleRAF = (t) => {
