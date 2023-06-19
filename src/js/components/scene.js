@@ -1,31 +1,60 @@
 import GUI from 'lil-gui'
-import { Renderer, Program, Color, Mesh, Triangle } from 'ogl'
+import { Renderer, Program, Color, Mesh, Triangle, Vec2 } from 'ogl'
 import vertex from '@/js/glsl/main.vert'
 import fragment from '@/js/glsl/main.frag'
+import LoaderManager from '../managers/LoaderManager'
 // import LoaderManager from '@/js/managers/LoaderManager'
 
 class Scene {
-  renderer
-  mesh
-  program
-  guiObj = {
+  #el
+  #renderer
+  #mesh
+  #program
+  #guiObj = {
     offset: 1,
+    bulgeEffect: 1,
+    strength: 1.1,
+    radius: 0.95,
+    displacementMap: 0.3,
   }
-  constructor() {
+  #mouse = new Vec2(0, 0)
+  constructor(el) {
+    this.#el = el
     this.setGUI()
     this.setScene()
-    this.events()
   }
 
   setGUI() {
     const gui = new GUI()
-    gui.add(this.guiObj, 'offset', 0.5, 4).onChange(this.guiChange)
+
+    const handleChange = (value) => {
+      this.#program.uniforms.uOffset.value = value
+    }
+
+    gui.add(this.#guiObj, 'offset', 0.5, 4).onChange(handleChange)
   }
 
-  setScene() {
-    const canvasEl = document.querySelector('.scene')
-    this.renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio, 2), canvas: canvasEl })
-    const gl = this.renderer.gl
+  async setScene() {
+    this.#renderer = new Renderer({
+      dpr: Math.min(window.devicePixelRatio, 2),
+      canvas: this.#el,
+      width: this.#el.offsetWidth,
+      height: this.#el.offsetHeight,
+    })
+
+    const { gl } = this.#renderer
+
+    // Preloading
+    await LoaderManager.load(
+      [
+        {
+          name: 'image1',
+          texture: './img/image1.png',
+        },
+      ],
+      gl
+    )
+
     gl.clearColor(1, 1, 1, 1)
 
     this.handleResize()
@@ -43,53 +72,63 @@ class Scene {
 
     const geometry = new Triangle(gl)
 
-    // // To load files like textures, do :²
-    // LoaderManager.load(
-    //   [
-    //     {
-    //       name: 'matcap',
-    //       texture: './img/matcap.png',
-    //     },
-    //   ],
-    //   gl
-    // ).then(() => {
-    //   // do something
-    //   console.log(LoaderManager.assets)
-    // })
+    const texture = LoaderManager.get('image1')
 
-    this.program = new Program(gl, {
+    this.#program = new Program(gl, {
       vertex,
       fragment,
       uniforms: {
         uTime: { value: 0 },
-        uColor: { value: new Color(0.3, 0.2, 0.5) },
-        uOffset: { value: this.guiObj.offset },
+        uTexture: { value: texture },
+        uTextureResolution: { value: new Vec2(texture.image.width, texture.image.height) },
+        uResolution: { value: new Vec2(gl.canvas.offsetWidth, gl.canvas.offsetHeight) },
+        uMouse: { value: this.#mouse },
+        uBulge: { value: this.#guiObj.bulgeEffect },
+        uRadius: { value: this.#guiObj.radius },
+        uStrength: { value: this.#guiObj.strength },
       },
     })
 
-    this.mesh = new Mesh(gl, { geometry, program: this.program })
+    console.log(this.#program.uniforms)
+
+    this.#mesh = new Mesh(gl, { geometry, program: this.#program })
+
+    this.events()
   }
 
   events() {
     window.addEventListener('resize', this.handleResize, false)
+    window.addEventListener('mousemove', this.handleMouseMove, false)
     requestAnimationFrame(this.handleRAF)
   }
 
   handleResize = () => {
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    const w = window.innerWidth
+    const h = window.innerHeight
+    this.#renderer.setSize(w, h)
+
+    if (this.#program) {
+      this.#program.uniforms.uResolution.value = new Vec2(w, h)
+    }
+  }
+
+  handleMouseMove = (e) => {
+    const x = (e.clientX / window.innerWidth) * 2 - 1
+    const y = (e.clientY / window.innerHeight) * 2 - 1
+
+    this.#mouse.x = x
+    this.#mouse.y = y
   }
 
   handleRAF = (t) => {
     requestAnimationFrame(this.handleRAF)
 
-    this.program.uniforms.uTime.value = t * 0.001
+    this.#program.uniforms.uTime.value = t * 0.001
+
+    this.#program.uniforms.uMouse.value = this.#mouse
 
     // Don't need a camera if camera uniforms aren't required
-    this.renderer.render({ scene: this.mesh })
-  }
-
-  guiChange = (value) => {
-    this.program.uniforms.uOffset.value = value
+    this.#renderer.render({ scene: this.#mesh })
   }
 }
 

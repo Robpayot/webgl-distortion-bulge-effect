@@ -1,8 +1,9 @@
 // Test import of a JavaScript module
 import Scene from '@/js/components/scene'
 
-(() => {
-  console.log('test')
+;(() => {
+  const canvasEl = document.querySelector('.scene')
+
   // scene
-  new Scene()
+  new Scene(canvasEl)
 })()

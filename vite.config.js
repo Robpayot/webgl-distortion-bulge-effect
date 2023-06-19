@@ -6,7 +6,7 @@ export default defineConfig({
   root: '',
   base: '/vite-2d-shader-template/', // for Github pages, otherwise use './'
   build: {
-    outDir: 'dist',
+    outDir: '../dist',
   },
   server: {
     host: true, // to test on other devices with IP address

@@ -5,6 +5,10 @@ class LoaderManager {
     this.assets = {} // Dictionary of assets, can be different type, gltf, texture, img, font, feel free to make a Enum if using TypeScript
   }
 
+  get(name) {
+    return this.assets[name]
+  }
+
   load = (data, gl) =>
     new Promise((resolve) => {
       const promises = []
