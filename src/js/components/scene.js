@@ -114,7 +114,7 @@ class Scene {
 
   handleMouseMove = (e) => {
     const x = (e.clientX / window.innerWidth)
-    const y = (e.clientY / window.innerHeight)
+    const y = 1 - (e.clientY / window.innerHeight)
 
     this.#mouse.x = x
     this.#mouse.y = y
