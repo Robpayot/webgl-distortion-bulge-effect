@@ -1,0 +1,11 @@
+.main-title {
+  position: absolute;
+  text-align: center;
+  font-size: 7vw;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  z-index: 10;
+  transform: translateY(-50%);
+  color: var(--color-white);
+}

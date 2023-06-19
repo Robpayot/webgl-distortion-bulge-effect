@@ -1,0 +1,67 @@
+.footer {
+  bottom: 50px;
+  z-index: 200;
+  width: 100%;
+  padding: 0px 40px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  position: absolute;
+  justify-content: end;
+
+  @include respond-to(smartphone) {
+    bottom: 100px;
+    padding: 0px 20px;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    margin: 0 8px;
+    transform: scale(0.8);
+    transition: transform 0.3s var(--ease-out-bounce);
+
+    @include respond-to(smartphone) {
+      margin: 0 5px;
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &--learn {
+      font-size: 27px;
+      color: var(--color-footer);
+      @include respond-to(smartphone) {
+        margin-right: auto;
+        font-size: 22px;
+      }
+    }
+
+    &:hover {
+      transform: none;
+      transition: transform 0.3s var(--ease-out-bounce);
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+
+    @include respond-to(smartphone) {
+      width: 18px;
+      height: 18px;
+    }
+
+    path {
+      fill: var(--color-footer);
+      stroke: var(--color-footer);
+    }
+  }
+}
