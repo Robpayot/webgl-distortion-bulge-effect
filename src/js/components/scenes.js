@@ -4,6 +4,7 @@ import vertex from '@/js/glsl/main.vert'
 import fragment from '@/js/glsl/main.frag'
 import LoaderManager from '../managers/LoaderManager'
 import { gsap } from 'gsap'
+import { isTouch } from '../utils/isTouch'
 // import LoaderManager from '@/js/managers/LoaderManager'
 
 class Scene {
@@ -22,12 +23,15 @@ class Scene {
   #canMove = true
   #src
   #index
+  #isTouch
   constructor(el, src, index) {
     this.#el = el
     this.#src = src
     this.#index = index
     this.setGUI()
     this.setScene()
+
+    this.#isTouch = isTouch()
   }
 
   setGUI() {
@@ -143,10 +147,16 @@ class Scene {
 
   events() {
     window.addEventListener('resize', this.handleResize, false)
-    window.addEventListener('mousemove', this.handleMouseMove, false)
+
+    if (isTouch()) {
+      window.addEventListener('touchmove', this.handleMouseMove, false)
+    } else {
+      window.addEventListener('mousemove', this.handleMouseMove, false)
+    }
 
     this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
     this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
+
     requestAnimationFrame(this.handleRAF)
   }
 
@@ -160,13 +170,18 @@ class Scene {
     if (this.#program) {
       this.#program.uniforms.uResolution.value = new Vec2(w, h)
     }
+
+    this.#isTouch = isTouch()
   }
 
   handleMouseMove = (e) => {
     if (!this.#canMove) return
     this.#elRect = this.#el.getBoundingClientRect()
-    const x = (e.clientX - this.#elRect.left) / this.#el.offsetWidth
-    const y = 1 - (e.clientY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
+
+    let eventX = this.#isTouch ? e.touches[0].pageX : e.clientX
+    let eventY = this.#isTouch ? e.touches[0].pageX : e.clientX
+    const x = (eventX - this.#elRect.left) / this.#el.offsetWidth
+    const y = 1 - (eventY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
 
     this.#mouse.x = gsap.utils.clamp(0, 1, x)
     this.#mouse.y = gsap.utils.clamp(0, 1, y)
