@@ -81,7 +81,6 @@ class Scene {
     const geometry = new Triangle(gl)
 
     const texture = LoaderManager.get(`image_${this.#index}`)
-    console.log(LoaderManager)
 
     this.#program = new Program(gl, {
       vertex,
@@ -92,6 +91,8 @@ class Scene {
         uTextureResolution: { value: new Vec2(texture.image.width, texture.image.height) },
         uResolution: { value: new Vec2(gl.canvas.offsetWidth, gl.canvas.offsetHeight) },
         uMouse: { value: this.#mouse },
+        uMouseIntro: { value: new Vec2(0.5, 0) },
+        uIntro: { value: 0 },
         uBulge: { value: this.#guiObj.bulge },
         uRadius: { value: this.#guiObj.radius },
         uStrength: { value: this.#guiObj.strength },
@@ -102,13 +103,23 @@ class Scene {
 
     this.events()
 
-    // this.intro()
+    this.intro()
   }
 
   intro() {
-    this.#mouse.x = 0.5
-    this.#mouse.y = 0
-    gsap.fromTo(
+    let delay = 0
+
+    if (this.#index === 2) {
+      delay = 0.25
+    } else if (this.#index === 0) {
+      delay = 0.5
+    }
+
+    gsap.delayedCall(delay, () => {
+      this.#el.parentNode.parentNode.classList.add('is-visible')
+    })
+
+    this.tlBulge = gsap.fromTo(
       this.#program.uniforms.uBulge,
       { value: 2 },
       {
@@ -116,10 +127,18 @@ class Scene {
         duration: 2,
         ease: 'expo.out',
         onComplete: () => {
-          this.#canMove = true
+          // this.#canMove = true
+          // this.handleResize()
         },
+        delay,
       }
     )
+
+    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 3, delay })
+
+    // gsap.delayedCall(delay + 1, () => {
+    //   this.#canMove = true
+    // })
   }
 
   events() {
@@ -145,6 +164,7 @@ class Scene {
 
   handleMouseMove = (e) => {
     if (!this.#canMove) return
+    this.#elRect = this.#el.getBoundingClientRect()
     const x = (e.clientX - this.#elRect.left) / this.#el.offsetWidth
     const y = 1 - (e.clientY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
 
@@ -154,6 +174,7 @@ class Scene {
 
   handleMouseEnter = () => {
     if (!this.#canMove) return
+    this.tlBulge?.kill()
     gsap.fromTo(this.#program.uniforms.uBulge, { value: 0 }, { value: 1, duration: 1, ease: 'expo.out' })
   }
   handleMouseLeave = () => {

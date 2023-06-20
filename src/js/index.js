@@ -1,9 +1,10 @@
 // Test import of a JavaScript module
-import Scene from '@/js/components/scene'
+import Scene from '@/js/components/Scene'
+import Text from '@/js/components/Text'
 
-const ASSETS = ['image1.png', 'image-2.jpg'];
+const ASSETS = ['image-7.jpg', 'image1.png', 'image-2.jpg']
 
-(() => {
+;(() => {
   const cards = document.querySelectorAll('.card-container')
 
   cards.forEach((el, index) => {
@@ -11,5 +12,8 @@ const ASSETS = ['image1.png', 'image-2.jpg'];
 
     // scene
     new Scene(canvas, ASSETS[index], index)
+
+    const text = el.querySelector('.text')
+    new Text(text, index)
   })
 })()

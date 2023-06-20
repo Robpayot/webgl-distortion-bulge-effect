@@ -3,6 +3,9 @@ precision highp float;
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform vec2 uMouse;
+uniform vec2 uMouseIntro;
+
+uniform float uIntro;
 uniform float uRadius;
 uniform float uStrength;
 uniform float uBulge;
@@ -27,7 +30,8 @@ vec2 bulge(vec2 uv, vec2 center) {
 
 void main() {
   // Add bulge effect based on mouse
-  vec2 bulgeUV = bulge(vUv, uMouse);
+  vec2 mixMouse = mix(uMouseIntro, uMouse, uIntro);
+  vec2 bulgeUV = bulge(vUv, mixMouse);
 
   vec4 tex = texture2D(uTexture, bulgeUV);
 
