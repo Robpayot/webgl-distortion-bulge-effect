@@ -179,7 +179,7 @@ class Scene {
     this.#elRect = this.#el.getBoundingClientRect()
 
     let eventX = this.#isTouch ? e.touches[0].pageX : e.clientX
-    let eventY = this.#isTouch ? e.touches[0].pageX : e.clientX
+    let eventY = this.#isTouch ? e.touches[0].pageY : e.clientY
     const x = (eventX - this.#elRect.left) / this.#el.offsetWidth
     const y = 1 - (eventY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
 
