@@ -4,7 +4,7 @@ import * as path from 'path'
 
 export default defineConfig({
   root: '',
-  base: '/vite-2d-shader-template/', // for Github pages, otherwise use './'
+  base: '/webgl-distortion-bulge-effect/', // for Github pages, otherwise use './'
   build: {
     outDir: 'dist',
   },
