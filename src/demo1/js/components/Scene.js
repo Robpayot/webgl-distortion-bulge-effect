@@ -5,6 +5,7 @@ import fragment from '../glsl/main.frag'
 import LoaderManager from '../managers/LoaderManager'
 import { gsap } from 'gsap'
 import { isTouch } from '../utils/isTouch'
+import IntersectionObserver from '../managers/IntersectionObserver'
 // import LoaderManager from '@/demo1/js/managers/LoaderManager'
 
 class Scene {
@@ -30,6 +31,9 @@ class Scene {
     this.#index = index
     this.setGUI()
     this.setScene()
+
+    this.#el.dataset.intersectId = index
+
 
     this.#isTouch = isTouch()
     console.log('demo 1')
@@ -108,17 +112,20 @@ class Scene {
 
     this.events()
 
-    this.intro()
+    IntersectionObserver.observe(this.#index, this.#el, this.intro)
+
+
+    // this.intro()
   }
 
-  intro() {
+  intro = () => {
     let delay = 0
 
-    if (this.#index === 2) {
-      delay = 0.25
-    } else if (this.#index === 0) {
-      delay = 0.5
-    }
+    // if (this.#index === 2) {
+    //   delay = 0.25
+    // } else if (this.#index === 0) {
+    //   delay = 0.5
+    // }
 
     gsap.delayedCall(delay, () => {
       this.#el.parentNode.parentNode.classList.add('is-visible')
