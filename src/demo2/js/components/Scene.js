@@ -1,11 +1,11 @@
 import GUI from 'lil-gui'
 import { Renderer, Program, Color, Mesh, Triangle, Vec2 } from 'ogl'
-import vertex from '@/js/glsl/main.vert'
-import fragment from '@/js/glsl/main.frag'
+import vertex from '../glsl/main.vert'
+import fragment from '../glsl/main.frag'
 import LoaderManager from '../managers/LoaderManager'
 import { gsap } from 'gsap'
 import { isTouch } from '../utils/isTouch'
-// import LoaderManager from '@/js/managers/LoaderManager'
+// import LoaderManager from '@/demo2/js/managers/LoaderManager'
 
 class Scene {
   #el
@@ -32,6 +32,7 @@ class Scene {
     this.setScene()
 
     this.#isTouch = isTouch()
+    console.log('demo 2')
   }
 
   setGUI() {

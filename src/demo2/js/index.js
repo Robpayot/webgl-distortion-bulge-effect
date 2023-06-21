@@ -1,6 +1,6 @@
 // Test import of a JavaScript module
-import Scene from '@/js/components/Scene'
-import Text from '@/js/components/Text'
+import Scene from '@/demo2/js/components/Scene'
+import Text from '@/demo2/js/components/Text'
 
 const ASSETS = ['image-7.jpg', 'image1.png', 'image-2.jpg']
 

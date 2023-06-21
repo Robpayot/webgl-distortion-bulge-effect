@@ -1,0 +1,28 @@
+html {
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &.scroll {
+    overflow: visible;
+  }
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: #00a8ff;
+  color: white;
+  line-height: 1.3;
+  position: relative;
+  font-family: 'Roboto Slab', serif;
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
