@@ -7,11 +7,15 @@ export default defineConfig({
   base: '/webgl-distortion-bulge-effect/', // for Github pages, otherwise use './'
   build: {
     outDir: 'dist',
+    cssCodeSplit: true,
     rollupOptions: {
       input: {
         demo1: './index.html',
         demo2: './index2.html',
       },
+      // assetFileNames: (assetInfo) => {
+      //   return assetInfo.name
+      // },
     },
   },
   server: {
