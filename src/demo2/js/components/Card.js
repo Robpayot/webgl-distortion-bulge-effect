@@ -5,46 +5,40 @@ import fragment from '../glsl/main.frag'
 import LoaderManager from '../managers/LoaderManager'
 import { gsap } from 'gsap'
 import { isTouch } from '../utils/isTouch'
-// import LoaderManager from '@/demo2/js/managers/LoaderManager'
+import IntersectionObserver from '../managers/IntersectionObserver'
+// import LoaderManager from '@/demo1/js/managers/LoaderManager'
 
-class Scene {
+export default class Card {
   #el
   #renderer
   #mesh
   #program
-  #guiObj = {
-    bulge: 0,
-    strength: 1.1,
-    radius: 0.95,
-    displacementMap: 0.3,
-  }
   #mouse = new Vec2(0, 0)
   #elRect
   #canMove = true
   #src
   #index
   #isTouch
-  constructor(el, src, index) {
+  #guiObj
+  constructor({ el, src, index, guiObj }) {
     this.#el = el
     this.#src = src
     this.#index = index
-    this.setGUI()
+    this.#guiObj = guiObj
     this.setScene()
 
+    this.#el.dataset.intersectId = index
+
     this.#isTouch = isTouch()
-    console.log('demo 2')
+    console.log('demo 1')
   }
 
-  setGUI() {
-    const gui = new GUI()
+  get type() {
+    return 'card'
+  }
 
-    const handleChange = () => {
-      this.#program.uniforms.uRadius.value = this.#guiObj.radius
-      this.#program.uniforms.uStrength.value = this.#guiObj.strength
-    }
-
-    gui.add(this.#guiObj, 'radius', 0, 1).onChange(handleChange)
-    gui.add(this.#guiObj, 'strength', 0, 3).onChange(handleChange)
+  get program() {
+    return this.#program
   }
 
   async setScene() {
@@ -70,7 +64,7 @@ class Scene {
 
     gl.clearColor(1, 1, 1, 1)
 
-    this.handleResize()
+    this.resize()
 
     // Rather than using a plane (two triangles) to cover the viewport here is a
     // triangle that includes -1 to 1 range for 'position', and 0 to 1 range for 'uv'.
@@ -98,7 +92,7 @@ class Scene {
         uMouse: { value: this.#mouse },
         uMouseIntro: { value: new Vec2(0.5, 0) },
         uIntro: { value: 0 },
-        uBulge: { value: this.#guiObj.bulge },
+        uBulge: { value: 0 },
         uRadius: { value: this.#guiObj.radius },
         uStrength: { value: this.#guiObj.strength },
       },
@@ -108,17 +102,19 @@ class Scene {
 
     this.events()
 
-    this.intro()
+    IntersectionObserver.observe(this.#index, this.#el, this.intro)
+
+    // this.intro()
   }
 
-  intro() {
+  intro = () => {
     let delay = 0
 
-    if (this.#index === 2) {
-      delay = 0.25
-    } else if (this.#index === 0) {
-      delay = 0.5
-    }
+    // if (this.#index === 2) {
+    //   delay = 0.25
+    // } else if (this.#index === 0) {
+    //   delay = 0.5
+    // }
 
     gsap.delayedCall(delay, () => {
       this.#el.parentNode.parentNode.classList.add('is-visible')
@@ -133,7 +129,7 @@ class Scene {
         ease: 'expo.out',
         onComplete: () => {
           // this.#canMove = true
-          // this.handleResize()
+          // this.resize()
         },
         delay,
       }
@@ -147,35 +143,21 @@ class Scene {
   }
 
   events() {
-    window.addEventListener('resize', this.handleResize, false)
-
-    if (isTouch()) {
-      window.addEventListener('touchmove', this.handleMouseMove, false)
-    } else {
-      window.addEventListener('mousemove', this.handleMouseMove, false)
-    }
-
     this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
     this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
-
-    requestAnimationFrame(this.handleRAF)
   }
 
-  handleResize = () => {
-    const w = this.#el.parentNode.offsetWidth
-    const h = this.#el.parentNode.offsetHeight
-    this.#renderer.setSize(w, h)
+  render = (t) => {
+    if (!this.#program) return
+    // this.#program.uniforms.uTime.value = t * 0.001
 
-    this.#elRect = this.#el.getBoundingClientRect()
+    this.#program.uniforms.uMouse.value = this.#mouse
 
-    if (this.#program) {
-      this.#program.uniforms.uResolution.value = new Vec2(w, h)
-    }
-
-    this.#isTouch = isTouch()
+    // Don't need a camera if camera uniforms aren't required
+    this.#renderer.render({ scene: this.#mesh })
   }
 
-  handleMouseMove = (e) => {
+  mouseMove = (e) => {
     if (!this.#canMove) return
     this.#elRect = this.#el.getBoundingClientRect()
 
@@ -193,21 +175,23 @@ class Scene {
     this.tlBulge?.kill()
     gsap.fromTo(this.#program.uniforms.uBulge, { value: 0 }, { value: 1, duration: 1, ease: 'expo.out' })
   }
+
   handleMouseLeave = () => {
     if (!this.#canMove) return
     gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
   }
 
-  handleRAF = (t) => {
-    requestAnimationFrame(this.handleRAF)
+  resize = () => {
+    const w = this.#el.parentNode.offsetWidth
+    const h = this.#el.parentNode.offsetHeight
+    this.#renderer.setSize(w, h)
 
-    this.#program.uniforms.uTime.value = t * 0.001
+    this.#elRect = this.#el.getBoundingClientRect()
 
-    this.#program.uniforms.uMouse.value = this.#mouse
+    if (this.#program) {
+      this.#program.uniforms.uResolution.value = new Vec2(w, h)
+    }
 
-    // Don't need a camera if camera uniforms aren't required
-    this.#renderer.render({ scene: this.#mesh })
+    this.#isTouch = isTouch()
   }
 }
-
-export default Scene

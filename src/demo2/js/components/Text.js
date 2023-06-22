@@ -17,6 +17,10 @@ class Text {
       this.#el.appendChild(span)
     })
   }
+
+  get type() {
+    return 'text'
+  }
 }
 
 export default Text

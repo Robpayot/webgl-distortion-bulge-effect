@@ -1,19 +1,6 @@
 // Test import of a JavaScript module
-import Scene from '@/demo2/js/components/Scene'
-import Text from '@/demo2/js/components/Text'
 
-const ASSETS = ['image-7.jpg', 'image1.png', 'image-2.jpg']
-
+import App from './App'
 ;(() => {
-  const cards = document.querySelectorAll('.card-container')
-
-  cards.forEach((el, index) => {
-    const canvas = el.querySelector('canvas')
-
-    // scene
-    new Scene(canvas, ASSETS[index], index)
-
-    const text = el.querySelector('.text')
-    new Text(text, index)
-  })
+  new App()
 })()

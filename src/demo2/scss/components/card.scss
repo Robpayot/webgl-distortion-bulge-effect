@@ -1,16 +1,4 @@
-.wrapper {
-  overflow-y: visible;
-  width: 100%;
-  height: 400vh;
-  margin-top: 150px;
-
-  // overflow-y: scroll;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.card-container {
+.card {
   // width: 30vw;
   height: 27vw;
   max-height: 70vh;
@@ -42,13 +30,13 @@
   }
 
   &:hover {
-    .text-container {
+    .text {
       transform: scale(1.15);
     }
   }
 }
 
-.card {
+.card__content {
   position: relative;
   width: 100%;
   height: 100%;
@@ -63,12 +51,12 @@
   &:hover {
     border-radius: 50%;
   }
+}
 
-  .scene {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+.card__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

@@ -1,0 +1,57 @@
+$margin: 20vw;
+
+.card {
+  // width: 30vw;
+  height: 40vw;
+  max-height: 70vh;
+  aspect-ratio: 9 / 12;
+  margin: 150px auto;
+  opacity: 0;
+
+  &:nth-child(even) {
+    transform: translateX(-$margin);
+  }
+
+  &:nth-child(odd) {
+    transform: translateX($margin);
+  }
+
+  &.is-visible {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+
+    .card__content {
+      transform: none;
+    }
+  }
+
+  &:hover {
+    .text {
+      // transform: translateY(-100%) translateY(-20px) scale(0.8);
+    }
+  }
+}
+
+.card__content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 3vw;
+  // border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+
+  transform: scale(0.5);
+
+  transition: transform 1s var(--ease-out-bounce) 0s;
+}
+
+.card__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

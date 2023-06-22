@@ -8,8 +8,8 @@ class IntersectObserver {
     })
   }
 
-  observe(id, el, methodIn, methodOut) {
-    this.entries[id] = { el, methodIn, methodOut }
+  observe(id, el, method) {
+    this.entries[id] = { el, method }
 
     this.observer.observe(el)
   }
@@ -23,12 +23,8 @@ class IntersectObserver {
     entries.forEach((entry) => {
       const id = entry.target.dataset.intersectId
 
-      if (id && this.entries[id]) {
-        if (entry.isIntersecting) {
-          this.entries[id].methodIn(entry)
-        } else {
-          this.entries[id].methodOut(entry)
-        }
+      if (id && this.entries[id] && entry.isIntersecting) {
+        this.entries[id].method(entry)
       }
     })
   }

@@ -8,47 +8,38 @@ import { isTouch } from '../utils/isTouch'
 import IntersectionObserver from '../managers/IntersectionObserver'
 // import LoaderManager from '@/demo1/js/managers/LoaderManager'
 
-class Scene {
+export default class Card {
   #el
   #renderer
   #mesh
   #program
-  #guiObj = {
-    bulge: 0,
-    strength: 1.1,
-    radius: 0.95,
-    displacementMap: 0.3,
-  }
   #mouse = new Vec2(0, 0)
   #elRect
   #canMove = true
   #src
   #index
   #isTouch
-  constructor(el, src, index) {
+  #guiObj
+  #visible
+  constructor({ el, src, index, guiObj }) {
     this.#el = el
     this.#src = src
     this.#index = index
-    this.setGUI()
+    this.#guiObj = guiObj
     this.setScene()
 
     this.#el.dataset.intersectId = index
-
 
     this.#isTouch = isTouch()
     console.log('demo 1')
   }
 
-  setGUI() {
-    const gui = new GUI()
+  get type() {
+    return 'card'
+  }
 
-    const handleChange = () => {
-      this.#program.uniforms.uRadius.value = this.#guiObj.radius
-      this.#program.uniforms.uStrength.value = this.#guiObj.strength
-    }
-
-    gui.add(this.#guiObj, 'radius', 0, 1).onChange(handleChange)
-    gui.add(this.#guiObj, 'strength', 0, 3).onChange(handleChange)
+  get program() {
+    return this.#program
   }
 
   async setScene() {
@@ -74,7 +65,7 @@ class Scene {
 
     gl.clearColor(1, 1, 1, 1)
 
-    this.handleResize()
+    this.resize()
 
     // Rather than using a plane (two triangles) to cover the viewport here is a
     // triangle that includes -1 to 1 range for 'position', and 0 to 1 range for 'uv'.
@@ -102,7 +93,7 @@ class Scene {
         uMouse: { value: this.#mouse },
         uMouseIntro: { value: new Vec2(0.5, 0) },
         uIntro: { value: 0 },
-        uBulge: { value: this.#guiObj.bulge },
+        uBulge: { value: 0 },
         uRadius: { value: this.#guiObj.radius },
         uStrength: { value: this.#guiObj.strength },
       },
@@ -112,63 +103,100 @@ class Scene {
 
     this.events()
 
-    IntersectionObserver.observe(this.#index, this.#el, this.intro)
-
-
-    // this.intro()
+    IntersectionObserver.observe(this.#index, this.#el, this.show, this.hide)
   }
 
-  intro = () => {
+  show = () => {
     let delay = 0
 
-    // if (this.#index === 2) {
-    //   delay = 0.25
-    // } else if (this.#index === 0) {
-    //   delay = 0.5
-    // }
+    this.tlHide?.kill()
+    this.tlShow = gsap.timeline()
 
     gsap.delayedCall(delay, () => {
       this.#el.parentNode.parentNode.classList.add('is-visible')
     })
 
-    this.tlBulge = gsap.fromTo(
+    this.tlShow.fromTo(
       this.#program.uniforms.uBulge,
-      { value: 2 },
+      { value: 1 },
       {
         value: 0,
-        duration: 2,
-        ease: 'expo.out',
-        onComplete: () => {
-          // this.#canMove = true
-          // this.handleResize()
-        },
+        duration: 1.8,
+        ease: 'power3.out',
         delay,
       }
     )
 
-    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 3, delay })
+    this.tlShow.to(this.#program.uniforms.uIntro, { value: 1, duration: 5, delay }, 0)
 
-    // gsap.delayedCall(delay + 1, () => {
-    //   this.#canMove = true
-    // })
+    this.#visible = true
+  }
+
+  hide = () => {
+    let delay = 0
+
+    this.tlShow?.kill()
+    this.tlHide = gsap.timeline()
+
+    gsap.delayedCall(delay, () => {
+      this.#el.parentNode.parentNode.classList.remove('is-visible')
+    })
+
+    this.tlHide.to(this.#program.uniforms.uBulge, {
+      value: 1,
+      duration: 1.8,
+      ease: 'power3.out',
+      delay,
+    })
+
+    this.tlHide.to(this.#program.uniforms.uIntro, { value: 0, duration: 1, delay }, 0)
+
+    this.#visible = false
   }
 
   events() {
-    window.addEventListener('resize', this.handleResize, false)
-
-    if (isTouch()) {
-      window.addEventListener('touchmove', this.handleMouseMove, false)
-    } else {
-      window.addEventListener('mousemove', this.handleMouseMove, false)
-    }
-
     this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
     this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
-
-    requestAnimationFrame(this.handleRAF)
   }
 
-  handleResize = () => {
+  render = (t) => {
+    if (!this.#program) return
+    // this.#program.uniforms.uTime.value = t * 0.001
+
+    this.#program.uniforms.uMouse.value = this.#mouse
+
+    // Don't need a camera if camera uniforms aren't required
+    this.#renderer.render({ scene: this.#mesh })
+  }
+
+  mouseMove = (e) => {
+    if (!this.#canMove || !this.#program || !this.#visible) return
+
+    this.#elRect = this.#el.getBoundingClientRect()
+
+    let eventX = this.#isTouch ? e.touches[0].pageX : e.clientX
+    let eventY = this.#isTouch ? e.touches[0].pageY : e.clientY
+    const x = (eventX - this.#elRect.left) / this.#el.offsetWidth
+    const y = 1 - (eventY - this.#elRect.top) / this.#el.offsetHeight
+
+    this.#mouse.x = gsap.utils.clamp(0, 1, x)
+    this.#mouse.y = gsap.utils.clamp(0, 1, y)
+  }
+
+  handleMouseEnter = () => {
+    if (!this.#canMove) return
+    this.tlHide?.kill()
+    this.tlShow?.kill()
+    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 1, ease: 'expo.out' })
+    gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, ease: 'expo.out' })
+  }
+
+  handleMouseLeave = () => {
+    if (!this.#canMove) return
+    gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
+  }
+
+  resize = () => {
     const w = this.#el.parentNode.offsetWidth
     const h = this.#el.parentNode.offsetHeight
     this.#renderer.setSize(w, h)
@@ -181,40 +209,4 @@ class Scene {
 
     this.#isTouch = isTouch()
   }
-
-  handleMouseMove = (e) => {
-    if (!this.#canMove) return
-    this.#elRect = this.#el.getBoundingClientRect()
-
-    let eventX = this.#isTouch ? e.touches[0].pageX : e.clientX
-    let eventY = this.#isTouch ? e.touches[0].pageY : e.clientY
-    const x = (eventX - this.#elRect.left) / this.#el.offsetWidth
-    const y = 1 - (eventY - this.#elRect.top + window.scrollY) / this.#el.offsetHeight
-
-    this.#mouse.x = gsap.utils.clamp(0, 1, x)
-    this.#mouse.y = gsap.utils.clamp(0, 1, y)
-  }
-
-  handleMouseEnter = () => {
-    if (!this.#canMove) return
-    this.tlBulge?.kill()
-    gsap.fromTo(this.#program.uniforms.uBulge, { value: 0 }, { value: 1, duration: 1, ease: 'expo.out' })
-  }
-  handleMouseLeave = () => {
-    if (!this.#canMove) return
-    gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
-  }
-
-  handleRAF = (t) => {
-    requestAnimationFrame(this.handleRAF)
-
-    this.#program.uniforms.uTime.value = t * 0.001
-
-    this.#program.uniforms.uMouse.value = this.#mouse
-
-    // Don't need a camera if camera uniforms aren't required
-    this.#renderer.render({ scene: this.#mesh })
-  }
 }
-
-export default Scene

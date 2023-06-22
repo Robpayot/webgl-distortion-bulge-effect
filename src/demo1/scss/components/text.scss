@@ -1,54 +1,45 @@
 $fontSize: 3vw;
 $height: 18vw;
 
-@keyframes rotate-loop {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
+// @keyframes rotate-loop {
+//   0% {
+//     transform: rotate(0deg);
+//   }
+//   100% {
+//     transform: rotate(360deg);
+//   }
+// }
+
+.text {
+  transition: transform 1.2s var(--ease-out-bounce) 0.1s;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  transform: translate(-50%, -50%) scale(0.2);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+
+  .is-visible & {
+    transform: translate(-50%, -50%);
   }
 }
 
-.text-container {
-  transform: scale(0.8);
-  position: absolute;
-  top: 50%;
-  left: 0%;
-  transition: transform 1.5s var(--ease-out-bounce);
+.text__words {
+  font-size: $fontSize;
+  text-align: center;
   width: 100%;
 
-  .text-inner {
-    animation: rotate-loop 15s linear infinite;
-  }
-
-  .is-visible & {
-    transform: none;
-  }
-
-  .text {
-    font-size: $fontSize;
-    text-align: center;
+  .char {
+    height: $height;
     position: absolute;
-    top: -$height;
-    left: calc(50% - ($fontSize / 2));
-    width: 100%;
-    height: calc($height / 2);
-    pointer-events: none;
-
-    @for $i from 1 through 100 {
-      .char:nth-child(#{$i}) {
-        transform: rotate(($i * 14) + deg);
-      }
-    }
-
-    .char {
-      height: $height;
-      position: absolute;
-      width: $fontSize;
-      left: 0;
-      top: 0;
-      transform-origin: bottom center;
-    }
+    width: $fontSize;
+    left: 0;
+    top: 0;
+    transform-origin: bottom center;
   }
 }
