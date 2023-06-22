@@ -25,6 +25,10 @@ $margin: 20vw;
     }
   }
 
+  @include respond-to(smartphone) {
+    height: 230px;
+  }
+
   &:hover {
     .text {
       // transform: translateY(-100%) translateY(-20px) scale(0.8);

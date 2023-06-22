@@ -36,12 +36,7 @@ $height: 18vw;
   text-align: center;
   width: 100%;
 
-  .char {
-    height: $height;
-    position: absolute;
-    width: $fontSize;
-    left: 0;
-    top: 0;
-    transform-origin: bottom center;
+  @include respond-to(smartphone) {
+    font-size: 28px;
   }
 }

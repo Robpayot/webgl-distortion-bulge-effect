@@ -1,6 +1,7 @@
 $fontSize: 3vw;
 $height: 18vw;
-$heightTouch: 150px;
+$fontSizeTouch: 35px;
+$heightTouch: 170px;
 
 @keyframes rotate-loop {
   0% {
@@ -54,26 +55,29 @@ $heightTouch: 150px;
   pointer-events: none;
 
   .is-touch & {
+    font-size: $fontSizeTouch;
     top: -$heightTouch;
     height: calc($heightTouch / 2);
+    left: calc(50% - ($fontSizeTouch / 2));
   }
 
   @for $i from 1 through 100 {
     .char:nth-child(#{$i}) {
-      transform: rotate(($i * 14) + deg);
+      transform: rotate(($i * 16) + deg);
     }
   }
 
   .char {
     height: $height;
-    position: absolute;
     width: $fontSize;
+    position: absolute;
     left: 0;
     top: 0;
     transform-origin: bottom center;
 
     .is-touch & {
       height: $heightTouch;
+      width: $fontSizeTouch;
     }
   }
 }

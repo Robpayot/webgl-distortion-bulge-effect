@@ -14,4 +14,8 @@
   &.is-visible {
     opacity: 0.75;
   }
+
+  @include respond-to(smartphone) {
+    font-size: 35px;
+  }
 }
