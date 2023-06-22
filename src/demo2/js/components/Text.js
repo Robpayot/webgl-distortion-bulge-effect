@@ -3,8 +3,6 @@ class Text {
   constructor(el) {
     this.#el = el
 
-    console.log(this.#el)
-
     const arr = this.#el.innerHTML.split('')
 
     this.#el.innerHTML = ''

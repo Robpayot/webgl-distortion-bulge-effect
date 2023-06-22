@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
 
   &.scroll {
     overflow: visible;
@@ -18,7 +18,6 @@ body {
   color: white;
   line-height: 1.3;
   position: relative;
-  font-family: 'Roboto Slab', serif;
 }
 
 a {
@@ -27,15 +26,15 @@ a {
 }
 
 .wrapper {
-  overflow-y: visible;
   width: 100%;
-  height: 400vh;
-  margin-top: 150px;
+  height: 100%;
+  position: relative;
+  // margin-top: 150px;
 
-  // overflow-y: scroll;
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: flex;
+  // flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 

@@ -4,34 +4,23 @@
   max-height: 70vh;
   aspect-ratio: 9 / 9;
   margin: 0 auto;
-  margin-top: 150px;
+  // margin-top: 150px;
   opacity: 0;
-
-  &:nth-child(even) {
-    transform: scale(0.5) translateX(-10vw);
-  }
-
-  &:nth-child(odd) {
-    transform: scale(0.5) translateX(10vw);
-  }
+  transform: scale(0.5);
 
   &.is-visible {
     opacity: 1;
     transform: none;
     transition: opacity 0.5s ease, transform 1s var(--ease-out-bounce) 0s;
+  }
 
-    &:nth-child(even) {
-      transform: translateX(-10vw);
-    }
-
-    &:nth-child(odd) {
-      transform: translateX(10vw);
-    }
+  &:nth-child(even) {
+    transform: scale(0.8);
   }
 
   &:hover {
     .text {
-      transform: scale(1.15);
+      transform: scale(0.7);
     }
   }
 }

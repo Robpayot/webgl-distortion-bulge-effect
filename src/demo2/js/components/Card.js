@@ -30,7 +30,6 @@ export default class Card {
     this.#el.dataset.intersectId = index
 
     this.#isTouch = isTouch()
-    console.log('demo 1')
   }
 
   get type() {
@@ -110,11 +109,11 @@ export default class Card {
   intro = () => {
     let delay = 0
 
-    // if (this.#index === 2) {
-    //   delay = 0.25
-    // } else if (this.#index === 0) {
-    //   delay = 0.5
-    // }
+    if (this.#index === 2) {
+      delay = 0.3
+    } else if (this.#index === 0) {
+      delay = 0.8
+    }
 
     gsap.delayedCall(delay, () => {
       this.#el.parentNode.parentNode.classList.add('is-visible')

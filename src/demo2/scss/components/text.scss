@@ -17,14 +17,29 @@ $height: 18vw;
   left: 0%;
   transition: transform 1.5s var(--ease-out-bounce);
   width: 100%;
+  font-family: 'Lilita One', cursive;
 
   .is-visible & {
     transform: none;
   }
+
+  .text__content {
+    animation: rotate-loop 15s linear infinite;
+  }
 }
 
-.text__content {
-  animation: rotate-loop 15s linear infinite;
+.card {
+  &:nth-child(2) {
+    .text__content {
+      animation: rotate-loop 15s linear infinite 1s;
+    }
+  }
+
+  &:nth-child(4) {
+    .text__content {
+      animation: rotate-loop 15s linear infinite 0.5s;
+    }
+  }
 }
 
 .text__words {

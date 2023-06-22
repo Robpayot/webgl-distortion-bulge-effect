@@ -1,6 +1,6 @@
-import Card from '@/demo1/js/components/Card'
-import Text from '@/demo1/js/components/Text'
-import Lenis from '@studio-freight/lenis'
+import Card from '@/demo2/js/components/Card'
+import Text from '@/demo2/js/components/Text'
+import Background from '@/demo2/js/components/Background'
 import { gsap } from 'gsap'
 import { isTouch } from './utils/isTouch'
 import GUI from 'lil-gui'
@@ -19,7 +19,6 @@ export default class App {
   constructor() {
     this.#components = this.createComponents()
 
-    this.#lenis = this.createLenis()
     this.#debug = this.createDebugger()
 
     this.events()
@@ -41,18 +40,10 @@ export default class App {
       components.push(new Text(text, index))
     })
 
+    const background = document.querySelector('.background__canvas')
+    components.push(new Background({ el: background }))
+
     return components
-  }
-
-  createLenis() {
-    // Set up Lenis scroll
-    const lenis = new Lenis({ infinite: true, lerp: 0.08 })
-
-    lenis.on('scroll', (e) => {
-      // console.log(e)
-    })
-
-    return lenis
   }
 
   events() {
@@ -68,8 +59,6 @@ export default class App {
   }
 
   handleRAF = (time) => {
-    this.#lenis.raf(time * 1000)
-
     for (let i = 0; i < this.#components.length; i++) {
       const comp = this.#components[i]
 
