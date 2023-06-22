@@ -30,6 +30,9 @@ export default class Card {
     this.#el.dataset.intersectId = index
 
     this.#isTouch = isTouch()
+    if (this.#isTouch) {
+      document.body.classList.add('is-touch')
+    }
   }
 
   get type() {
@@ -136,14 +139,22 @@ export default class Card {
 
     gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 3, delay })
 
+    if (this.#isTouch) {
+      gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, delay: 1 })
+      this.#mouse.x = 0.5
+      this.#mouse.y = 0.5
+    }
+
     // gsap.delayedCall(delay + 1, () => {
     //   this.#canMove = true
     // })
   }
 
   events() {
-    this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
-    this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
+    if (!this.#isTouch) {
+      this.#el.addEventListener('mouseenter', this.handleMouseEnter, false)
+      this.#el.addEventListener('mouseleave', this.handleMouseLeave, false)
+    }
   }
 
   render = (t) => {

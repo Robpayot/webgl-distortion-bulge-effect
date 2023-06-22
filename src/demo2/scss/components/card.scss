@@ -8,6 +8,11 @@
   opacity: 0;
   transform: scale(0.5);
 
+
+  .is-touch & {
+    height: 250px;
+  }
+
   &.is-visible {
     opacity: 1;
     transform: none;
@@ -16,6 +21,10 @@
 
   &:nth-child(even) {
     transform: scale(0.8);
+
+    .is-touch & {
+      display: none;
+    }
   }
 
   &:hover {
