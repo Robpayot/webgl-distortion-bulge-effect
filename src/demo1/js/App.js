@@ -1,5 +1,5 @@
 import Card from '@/demo1/js/components/Card'
-import Text from '@/demo1/js/components/Text'
+import Background from '@/demo1/js/components/Background'
 import Lenis from '@studio-freight/lenis'
 import { gsap } from 'gsap'
 import { isTouch } from './utils/isTouch'
@@ -36,10 +36,10 @@ export default class App {
 
       // scene
       components.push(new Card({ el: canvas, src: ASSETS[index], index, guiObj: this.#guiCard }))
-
-      // const text = el.querySelector('.text__words')
-      // components.push(new Text(text, index))
     })
+
+    const background = document.querySelector('.background__canvas')
+    components.push(new Background({ el: background }))
 
     return components
   }
@@ -47,6 +47,11 @@ export default class App {
   createLenis() {
     // Set up Lenis scroll
     const lenis = new Lenis({ infinite: false, lerp: 0.08 })
+    const scrollEl = document.querySelector('.scroll')
+
+    lenis.on('scroll', (e) => {
+      scrollEl.classList.remove('is-visible')
+    })
 
     return lenis
   }
