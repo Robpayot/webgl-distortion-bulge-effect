@@ -60,8 +60,9 @@ export default class Backround {
       fragment,
       uniforms: {
         uTime: { value: 0 },
-        uColor1: { value: new Color('red') },
-        uColor2: { value: new Color('blue') },
+        uScroll: { value: 0 },
+        uColor1: { value: new Color('#2DA7E3') },
+        uColor2: { value: new Color('#8049E3') },
         uResolution: { value: new Vec2(gl.canvas.offsetWidth, gl.canvas.offsetHeight) },
       },
     })
@@ -71,10 +72,15 @@ export default class Backround {
 
   render = (t) => {
     if (!this.#program) return
-    this.#program.uniforms.uTime.value = t * 0.001
+    this.#program.uniforms.uTime.value = t
+    // console.log(this.#program.uniforms.uTime.value)
 
     // Don't need a camera if camera uniforms aren't required
     this.#renderer.render({ scene: this.#mesh })
+  }
+
+  scroll = (s) => {
+    this.#program.uniforms.uScroll.value = s * 2
   }
 
   resize = () => {

@@ -47,11 +47,9 @@ export default class App {
   createLenis() {
     // Set up Lenis scroll
     const lenis = new Lenis({ infinite: false, lerp: 0.08 })
-    const scrollEl = document.querySelector('.scroll')
+    this.scrollEl = document.querySelector('.scroll')
 
-    lenis.on('scroll', (e) => {
-      scrollEl.classList.remove('is-visible')
-    })
+    lenis.on('scroll', this.handleScroll)
 
     return lenis
   }
@@ -96,6 +94,18 @@ export default class App {
 
       if (typeof comp.mouseMove === 'function') {
         comp.mouseMove(e)
+      }
+    }
+  }
+
+  handleScroll = (e) => {
+    this.scrollEl.classList.remove('is-visible')
+
+    for (let i = 0; i < this.#components.length; i++) {
+      const comp = this.#components[i]
+
+      if (typeof comp.scroll === 'function') {
+        comp.scroll(e.progress)
       }
     }
   }

@@ -9,9 +9,9 @@
 
   transform: translate(-50%, -50%);
 
-  transition: opacity 0.5s;
+  transition: opacity 1s;
 
   &.is-visible {
-    opacity: 0.5;
+    opacity: 0.75;
   }
 }
