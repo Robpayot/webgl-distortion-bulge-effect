@@ -187,7 +187,7 @@ export default class Card {
     if (!this.#canMove) return
     this.tlHide?.kill()
     this.tlShow?.kill()
-    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 1, ease: 'expo.out' })
+    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 5, ease: 'expo.out' })
     gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, ease: 'expo.out' })
   }
 
