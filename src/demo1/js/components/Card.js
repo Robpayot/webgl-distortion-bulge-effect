@@ -187,6 +187,7 @@ export default class Card {
     if (!this.#canMove) return
     this.tlHide?.kill()
     this.tlShow?.kill()
+    // this.tlLeave?.kill()
     this.tlForceIntro = new gsap.timeline()
     this.tlForceIntro.to(this.#program.uniforms.uIntro, { value: 1, duration: 5, ease: 'expo.out' })
     gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, ease: 'expo.out' })
@@ -195,7 +196,8 @@ export default class Card {
   handleMouseLeave = () => {
     if (!this.#canMove) return
     this.tlForceIntro?.kill()
-    gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
+    this.tlLeave = new gsap.timeline()
+    this.tlLeave.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
   }
 
   resize = () => {
