@@ -14,6 +14,7 @@ export default class Card {
   #mesh
   #program
   #mouse = new Vec2(0, 0)
+  #mouseTarget = new Vec2(0, 0)
   #elRect
   #canMove = true
   #src
@@ -163,7 +164,10 @@ export default class Card {
     if (!this.#program) return
     // this.#program.uniforms.uTime.value = t * 0.001
 
-    this.#program.uniforms.uMouse.value = this.#mouse
+    this.#mouseTarget.x = gsap.utils.interpolate(this.#mouseTarget.x, this.#mouse.x, 0.1)
+    this.#mouseTarget.y = gsap.utils.interpolate(this.#mouseTarget.y, this.#mouse.y, 0.1)
+
+    this.#program.uniforms.uMouse.value = this.#mouseTarget
 
     // Don't need a camera if camera uniforms aren't required
     this.#renderer.render({ scene: this.#mesh })
