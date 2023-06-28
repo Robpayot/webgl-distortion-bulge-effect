@@ -26,6 +26,7 @@ Create the build:
 
 ```
 npm run build
+```
 
 ## Credits
 
