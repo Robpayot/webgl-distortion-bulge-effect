@@ -1,21 +1,13 @@
 .scroll {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  letter-spacing: 2vw;
-  font-size: 3vw;
-  font-family: 'Open Sans', sans-serif;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  font-size: 2rem;
+  font-weight: 400;
   opacity: 0;
-
-  transform: translate(-50%, -50%);
-
   transition: opacity 1s;
 
   &.is-visible {
     opacity: 0.75;
-  }
-
-  @include respond-to(smartphone) {
-    font-size: 35px;
   }
 }

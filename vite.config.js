@@ -4,7 +4,7 @@ import * as path from 'path'
 
 export default defineConfig({
   root: '',
-  base: '/webgl-distortion-bulge-effect/', // for Github pages, otherwise use './'
+  base: '/', // for Github pages, otherwise use './'
   build: {
     outDir: 'dist',
     cssCodeSplit: true,

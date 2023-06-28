@@ -61,8 +61,8 @@ export default class Backround {
       uniforms: {
         uTime: { value: 0 },
         uScroll: { value: 0 },
-        uColor1: { value: new Color('#2DA7E3') },
-        uColor2: { value: new Color('#8049E3') },
+        uColor1: { value: new Color('#fdfaee') },
+        uColor2: { value: new Color('#d6abb4') },
         uResolution: { value: new Vec2(gl.canvas.offsetWidth, gl.canvas.offsetHeight) },
       },
     })

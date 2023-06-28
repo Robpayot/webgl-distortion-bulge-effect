@@ -1,11 +1,11 @@
-$margin: 20vw;
+$margin: 15vw;
 
 .card {
-  // width: 30vw;
-  height: 40vw;
-  max-height: 70vh;
-  aspect-ratio: 9 / 12;
-  margin: 150px auto;
+  width: 30vw;
+  max-width: 400px;
+  max-height: 600px;
+  height: 60vh;
+  margin: 15vh auto;
   opacity: 0;
 
   &:nth-child(even) {

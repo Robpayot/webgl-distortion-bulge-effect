@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { isTouch } from './utils/isTouch'
 import GUI from 'lil-gui'
 
-const ASSETS = ['image-7.jpg', 'image1.png', 'image-2.jpg']
+const ASSETS = ['image-7.jpg', 'image-3.jpg', 'image-6.jpg']
 
 export default class App {
   #components

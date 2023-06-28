@@ -1,6 +1,6 @@
-$fontSize: 3vw;
-$height: 18vw;
-$fontSizeTouch: 35px;
+$fontSize: 14px;
+$height: 15vw;
+$fontSizeTouch: 1rem;
 $heightTouch: 170px;
 
 @keyframes rotate-loop {
@@ -19,17 +19,18 @@ $heightTouch: 170px;
   left: 0%;
   transition: transform 1.5s var(--ease-out-bounce);
   width: 100%;
-  font-family: 'Lilita One', cursive;
+  text-transform: uppercase;
 
   .is-visible & {
     transform: none;
   }
 
-  .text__content {
+  /*.text__content {
     animation: rotate-loop 15s linear infinite;
-  }
+  }*/
 }
 
+/*
 .card {
   &:nth-child(2) {
     .text__content {
@@ -42,7 +43,7 @@ $heightTouch: 170px;
       animation: rotate-loop 15s linear infinite 0.5s;
     }
   }
-}
+}*/
 
 .text__words {
   font-size: $fontSize;
@@ -63,7 +64,7 @@ $heightTouch: 170px;
 
   @for $i from 1 through 100 {
     .char:nth-child(#{$i}) {
-      transform: rotate(($i * 16) + deg);
+      transform: rotate(($i * 6) + deg);
     }
   }
 
