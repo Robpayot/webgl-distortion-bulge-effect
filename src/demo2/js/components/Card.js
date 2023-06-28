@@ -14,6 +14,7 @@ export default class Card {
   #mesh
   #program
   #mouse = new Vec2(0, 0)
+  #mouseTarget = new Vec2(0, 0)
   #elRect
   #canMove = true
   #src
@@ -118,26 +119,24 @@ export default class Card {
       delay = 0.8
     }
 
+    this.tlShow = gsap.timeline()
+
     gsap.delayedCall(delay, () => {
       this.#el.parentNode.parentNode.classList.add('is-visible')
     })
 
-    this.tlBulge = gsap.fromTo(
+    this.tlShow.fromTo(
       this.#program.uniforms.uBulge,
-      { value: 2 },
+      { value: 1 },
       {
         value: 0,
-        duration: 2,
-        ease: 'expo.out',
-        onComplete: () => {
-          // this.#canMove = true
-          // this.resize()
-        },
+        duration: 1.8,
+        ease: 'power3.out',
         delay,
       }
     )
 
-    gsap.to(this.#program.uniforms.uIntro, { value: 1, duration: 3, delay })
+    this.tlShow.to(this.#program.uniforms.uIntro, { value: 1, duration: 5, delay }, 0)
 
     if (this.#isTouch) {
       gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, delay: 1 })
@@ -161,7 +160,10 @@ export default class Card {
     if (!this.#program) return
     // this.#program.uniforms.uTime.value = t * 0.001
 
-    this.#program.uniforms.uMouse.value = this.#mouse
+    this.#mouseTarget.x = gsap.utils.interpolate(this.#mouseTarget.x, this.#mouse.x, 0.1)
+    this.#mouseTarget.y = gsap.utils.interpolate(this.#mouseTarget.y, this.#mouse.y, 0.1)
+
+    this.#program.uniforms.uMouse.value = this.#mouseTarget
 
     // Don't need a camera if camera uniforms aren't required
     this.#renderer.render({ scene: this.#mesh })
@@ -182,13 +184,18 @@ export default class Card {
 
   handleMouseEnter = () => {
     if (!this.#canMove) return
-    this.tlBulge?.kill()
-    gsap.fromTo(this.#program.uniforms.uBulge, { value: 0 }, { value: 1, duration: 1, ease: 'expo.out' })
+    this.tlShow?.kill()
+    // this.tlLeave?.kill()
+    this.tlForceIntro = new gsap.timeline()
+    this.tlForceIntro.to(this.#program.uniforms.uIntro, { value: 1, duration: 5, ease: 'expo.out' })
+    gsap.to(this.#program.uniforms.uBulge, { value: 1, duration: 1, ease: 'expo.out' })
   }
 
   handleMouseLeave = () => {
     if (!this.#canMove) return
-    gsap.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
+    this.tlForceIntro?.kill()
+    this.tlLeave = new gsap.timeline()
+    this.tlLeave.to(this.#program.uniforms.uBulge, { value: 0, duration: 1, ease: 'expo.out' })
   }
 
   resize = () => {
