@@ -1,21 +1,12 @@
-*How to use this template:*
+# WebGL Bulge Effect
 
-- Styles for the demo go in css/base.css
-- Add build instructions and credits to the README.md
-- For writing the tutorial, take a look at https://github.com/crnacura/CodropsTemplate/wiki/Writing-the-article
-- Delete this 'how to' intro in the final version and leave the following (fill in title/description, credits and social links of your likings, we'll do the rest):
+Demos for the tutorial on how to create a bulge effect on images using OGL and shaders.
 
--------
+![Bulge](https://tympanus.net/codrops/wp-content/uploads/2023/06/webglbulgefeat.gif?x96671)
 
-# The Title
+[Article on Codrops](https://tympanus.net/codrops/?p=72639)
 
-*A description of the demo goes here.*
-
-![Image Title](https://generative-placeholders.glitch.me/image?width=800&height=600")
-
-[Article on Codrops](https://tympanus.net/codrops/?p=)
-
-[Demo](http://tympanus.net/Development/.../)
+[Demo](https://tympanus.net/Tutorials/WebGLBulge/)
 
 ## Installation
 
@@ -27,7 +18,7 @@ Run this demo on a [local server](https://developer.mozilla.org/en-US/docs/Learn
 
 ## Misc
 
-Follow *Author*: [Twitter](), [Instagram](), [GitHub]() 
+Follow Robin: [Twitter](https://twitter.com/RobinPayot), [GitHub](https://github.com/Robpayot), [YoutTube](https://www.youtube.com/@howtocodethat_) 
 
 Follow Codrops: [Twitter](http://www.twitter.com/codrops), [Facebook](http://www.facebook.com/codrops), [GitHub](https://github.com/codrops), [Instagram](https://www.instagram.com/codropsss/)
 
