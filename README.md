@@ -10,7 +10,22 @@ Demos for the tutorial on how to create a bulge effect on images using OGL and s
 
 ## Installation
 
-Run this demo on a [local server](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Tools_and_setup/set_up_a_local_testing_server).
+Install dependencies:
+
+```
+npm install
+```
+
+Compile the code for development and start a local server:
+
+```
+npm run dev
+```
+
+Create the build:
+
+```
+npm run build
 
 ## Credits
 
